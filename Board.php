@@ -19,11 +19,11 @@
         . "name char(32),"
         . "comment TEXT,"
         . "datetime DATETIME,"
-        . "password TEXT,"
+        . "password TEXT"
         . ");";
         $stmt = $pdo -> query($sql);
         //投稿受付
-        if ($_POST ["submit"] == "送信" && !empty ($_POST ["name"]) && !empty ($_POST ["comment"]) && !empty ($_POST ["post_pass"])) {
+        if (isset($_POST ["submit"]) && !empty ($_POST ["name"]) && !empty ($_POST ["comment"]) && !empty ($_POST ["post_pass"])) {
             $name = $_POST ["name"];
             $comment = $_POST ["comment"];
             $postpass = $_POST ["post_pass"];
@@ -62,7 +62,7 @@
                 }
             }
         //削除受付
-        } elseif ($_POST ["submit"] == "削除" && !empty($_POST['delete_pass'] && !empty($_POST['delete_num']))){
+        } elseif (!empty($_POST ["delete"]) && !empty($_POST['delete_pass'] && !empty($_POST['delete_num']))){
             $delete_num = $_POST["delete_num"];
             $deletepass = $_POST["delete_pass"];
             $id = $delete_num;
@@ -83,7 +83,7 @@
                 }
             }
         //編集受付
-        } elseif ($_POST ["submit"] == "編集" && !empty($_POST['edit_num']) && !empty($_POST['edit_pass'])) {
+        } elseif (!empty($_POST ["edit"]) && !empty($_POST['edit_num']) && !empty($_POST['edit_pass'])) {
             $edit_num = $_POST['edit_num'];
             $editpass = $_POST['edit_pass'];
             $id = $edit_num;
@@ -109,10 +109,10 @@
     <!--【投稿フォーム】-->
     <form action = "" method = "post" name = "postform">
         【　投稿フォーム　】<br>
-        名前：　　　　<input type = "text" name = "name" placeholder = "名前" value = "<?php echo $edit_name; ?>"><br>
-        コメント：　　<input type = "text" name = "comment" placeholder = "コメント" value = "<?php echo $edit_comment; ?>"><br>
+        名前：　　　　<input type = "text" name = "name" placeholder = "名前" value = "<?php if(isset($edit_name)) {echo $edit_name;} ?>"><br>
+        コメント：　　<input type = "text" name = "comment" placeholder = "コメント" value = "<?php if(isset($edit_comment)) {echo $edit_comment;} ?>"><br>
         パスワード：　<input type = "text" name = "post_pass" placeholder = "パスワード"><br>
-        <input type = "hidden" name = "editNo" value = "<?php echo $edit_number; ?>">
+        <input type = "hidden" name = "editNo" value = "<?php if(isset($edit_comment)) {echo $edit_number;} ?>">
         <input type = "submit" name = "submit" value = "送信">
     </form><br>
     <!--【削除フォーム】-->
@@ -120,14 +120,14 @@
         【　削除フォーム　】<br>
         投稿番号：　　<input type = "text" name = "delete_num" placeholder = "削除したい投稿番号"><br>
         パスワード：　<input type = "text" name = "delete_pass" placeholder = "パスワード"><br>
-        <input type = "submit" name = "submit" value = "削除">
+        <input type = "submit" name = "delete" value = "削除">
     </form><br>
     <!-- 【編集フォーム】 -->
     <form action = "" method = "post" name = "editform">
         【　編集フォーム　】<br>
         投稿番号：　　<input type = "text" name = "edit_num" placeholder = "編集したい投稿番号"><br>
         パスワード：　<input type = "text" name = "edit_pass" placeholder = "パスワード"><br>
-        <input type = "submit" name = "submit" value = "編集">
+        <input type = "submit" name = "edit" value = "編集">
     </form><br>
     <hr>
     【投稿一覧】<br>
