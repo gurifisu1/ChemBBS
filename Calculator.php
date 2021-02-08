@@ -9,17 +9,23 @@
 
 <body>
 
-<h1>試薬計算機</h1>
+<h1>化学実験BBS</h1>
+
+<h2>試薬計算機</h2>
 
 <?php
-	if ($_POST ["calculate"] == "計算" && !empty($_POST["SMmass"]) && !empty($_POST["SMweight"])) {
+	if (isset($_POST ["calculate"]) && !empty($_POST["SMmass"]) && !empty($_POST["SMweight"])) {
+		echo "OK";
 		$SMmass = $_POST ["SMmass"];
 		$SMweight = $_POST ["SMweight"];
 		$SMmoll = $SMmass / $SMweight;
+	}else{
+		echo "NO";
 	}
 ?>
 
 <table>
+	<form action = "" method = "post" name = "calculate_form">
 	<!-- 一行目 -->
 	<tr>	
     	<th></th>
@@ -30,56 +36,44 @@
 	</tr>
 	<!-- ニ行目 -->
 	<tr>
+		<!-- 原料 -->
     	<td>原料</td>
 		<!-- 質量 -->
     	<td>
-		<form action = "" method = "post" name = "SMmass_form">
 		<input type = "number" name = "SMmass" placeholder = "質量">
-		</form>
 		</td>
 		<!-- 分子量 -->
 		<td>
-		<form action = "" method = "post" name = "SMweight_form">
 		<input type = "number" name = "SMWeight" placeholder = "分子量">
-		</form>
 		</td>
 		<!-- モル数 -->
     	<td>
-		<form action = "" method = "post" name = "SMmoll_form">
-        <input type = "number" name = "SMmoll" value = "<?php echo $SMmoll; ?>">
+        <input type = "number" name = "SMmoll" value = "<?php if(isset($SMmoll)) {echo $SMmoll;} ?>">
 		</td>
 		<!-- 当量 -->
     	<td>
-		<form action = "" method = "post" name = "SMequivalent_form">
 		<input type = "number" name = "SMequivalent" placeholder = "当量">
-		</form>
 		</td>
 	</tr>
 	<!-- 三行目 -->
 	<tr>
+		<!-- 試薬 -->
     	<td>試薬</td>
 		<!-- 質量 -->
     	<td>
-		<form action = "" method = "post" name = "SMmass_form">
 		<input type = "number" name = "SMmass" placeholder = "質量">
-		</form>
 		</td>
 		<!-- 分子量 -->
 		<td>
-		<form action = "" method = "post" name = "SMweight_form">
 		<input type = "number" name = "SMWeight" placeholder = "分子量">
-		</form>
 		</td>
 		<!-- モル数 -->
     	<td><?php  ?></td>
 		<!-- 当量 -->
     	<td>
-		<form action = "" method = "post" name = "SMequivalent_form">
 		<input type = "number" name = "SMequivalent" placeholder = "当量">
-		</form>
 		</td>
 	</tr>
-	<form action = "" method = "post" name = "calculate_form">
 	<input type = "submit" name = "calculate" value = "計算">
 	</form>
 </table>
