@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=320, height=480, initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+    <meta charset="utf-8">
     <title>実験掲示板</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <?php
         //データベース接続処理
-        $dsn = 'mysql:dbname=データベース名;host=localhost';
-        $user = 'ユーザー名';
-        $password = 'パスワード';
+        $dsn = 'mysql:dbname=********;host=localhost';
+        $user = '********';
+        $password = '********';
         $pdo = new PDO($dsn, $user, $password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
         //テーブル作成処理
-        $sql = "CREATE TABLE IF NOT EXISTS mission5"
+        $sql = "CREATE TABLE IF NOT EXISTS bbs"
         . " ("
         . "id INT AUTO_INCREMENT PRIMARY KEY,"
         . "name char(32),"
@@ -31,7 +33,7 @@
             $date = date ("Y/m/d H:i:s");
             // 非編集モード
             if (empty ($_POST ["editNo"])) {
-                $sql = $pdo -> prepare("INSERT INTO mission5 (name, comment, datetime, password) VALUES (:name, :comment, :datetime, :password)");
+                $sql = $pdo -> prepare("INSERT INTO bbs (name, comment, datetime, password) VALUES (:name, :comment, :datetime, :password)");
                 $sql -> bindParam(':name', $name, PDO::PARAM_STR);
                 $sql -> bindParam(':comment', $comment, PDO::PARAM_STR);
                 $sql -> bindParam(':datetime', $date, PDO::PARAM_STR);
@@ -43,7 +45,7 @@
                 $editpass = $_POST['post_pass'];
                 $id = $editNo;
                 if (isset($id)) {
-                    $sql = 'SELECT * FROM mission5 WHERE id=:id ';
+                    $sql = 'SELECT * FROM bbs WHERE id=:id ';
                     $stmt = $pdo->prepare($sql);
                     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                     $stmt->execute();
@@ -51,7 +53,7 @@
                         foreach ($results as $row){
                         $existpass = $row['password'];
                         if ($existpass == $editpass) {
-                            $sql = 'UPDATE mission5 SET name=:name,comment=:comment WHERE id=:id';
+                            $sql = 'UPDATE bbs SET name=:name,comment=:comment WHERE id=:id';
                             $stmt = $pdo->prepare($sql);
                             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
                             $stmt->bindParam(':comment', $comment, PDO::PARAM_STR);
@@ -67,7 +69,7 @@
             $deletepass = $_POST["delete_pass"];
             $id = $delete_num;
             if (isset($id)) {
-                $sql = 'SELECT * FROM mission5 WHERE id=:id ';
+                $sql = 'SELECT * FROM bbs WHERE id=:id ';
                 $stmt = $pdo->prepare($sql);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
@@ -88,7 +90,7 @@
             $editpass = $_POST['edit_pass'];
             $id = $edit_num;
             if (isset($id)) {
-                $sql = 'SELECT * FROM mission5 WHERE id=:id ';
+                $sql = 'SELECT * FROM bbs WHERE id=:id ';
                 $stmt = $pdo->prepare($sql);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
@@ -105,28 +107,31 @@
         }
     ?>
 
-    <h1>化学実験掲示板</h1>
+    <h1><img src="iconb.png" width="40px">  ChemSquareβ</h1>
+    <hr>
+
+    <h2>実験掲示板</h2>
     <!--【投稿フォーム】-->
     <form action = "" method = "post" name = "postform">
         【　投稿フォーム　】<br>
-        名前：　　　　<input type = "text" name = "name" placeholder = "名前" value = "<?php if(isset($edit_name)) {echo $edit_name;} ?>"><br>
-        コメント：　　<input type = "text" name = "comment" placeholder = "コメント" value = "<?php if(isset($edit_comment)) {echo $edit_comment;} ?>"><br>
-        パスワード：　<input type = "text" name = "post_pass" placeholder = "パスワード"><br>
+        名前　　　：<input type = "text" name = "name" placeholder = "名前" value = "<?php if(isset($edit_name)) {echo $edit_name;} ?>"><br>
+        コメント　：<input type = "text" name = "comment" placeholder = "コメント" value = "<?php if(isset($edit_comment)) {echo $edit_comment;} ?>"><br>
+        パスワード：<input type = "password" name = "post_pass" placeholder = "パスワード"> ※コメントの削除・編集の際に必要になります <br>
         <input type = "hidden" name = "editNo" value = "<?php if(isset($edit_comment)) {echo $edit_number;} ?>">
         <input type = "submit" name = "submit" value = "送信">
     </form><br>
     <!--【削除フォーム】-->
     <form action = "" method = "post" name = "deleteform">
         【　削除フォーム　】<br>
-        投稿番号：　　<input type = "text" name = "delete_num" placeholder = "削除したい投稿番号"><br>
-        パスワード：　<input type = "text" name = "delete_pass" placeholder = "パスワード"><br>
+        投稿番号　：<input type = "text" name = "delete_num" placeholder = "削除したい投稿番号"><br>
+        パスワード：<input type = "password" name = "delete_pass" placeholder = "パスワード"><br>
         <input type = "submit" name = "delete" value = "削除">
     </form><br>
     <!-- 【編集フォーム】 -->
     <form action = "" method = "post" name = "editform">
         【　編集フォーム　】<br>
-        投稿番号：　　<input type = "text" name = "edit_num" placeholder = "編集したい投稿番号"><br>
-        パスワード：　<input type = "text" name = "edit_pass" placeholder = "パスワード"><br>
+        投稿番号　：<input type = "text" name = "edit_num" placeholder = "編集したい投稿番号"><br>
+        パスワード：<input type = "password" name = "edit_pass" placeholder = "パスワード"><br>
         <input type = "submit" name = "edit" value = "編集">
     </form><br>
     <hr>
@@ -134,13 +139,17 @@
 
     <?php
         //テーブル表示処理
-        $sql = 'SELECT * FROM mission5';
+        $sql = 'SELECT * FROM bbs';
         $stmt = $pdo->query($sql);
         $results = $stmt->fetchAll();
         foreach ($results as $row){
             echo $row['id'].' '. $row['name'].' '. $row['comment'].' '. date("Y/m/d H:i:s", strtotime($row['datetime'])). '<br>';
         }
     ?>
+
+    <hr>
+    <!-- トップページへのリンク -->
+    <a href="https://tb-221172.tech-base.net/top.html"> ChemSquareトップ </a>
 
 </body>
 </html>
